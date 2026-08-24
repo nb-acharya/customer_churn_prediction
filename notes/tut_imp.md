@@ -17,5 +17,9 @@ we never prove things with 100% certainty from data.
 EDA says I found something interesting and HT says lets see if the evidence is strong enough.
 
 
+### Feature Engineering
+Feature engineering is the process of creating or transforming features so that the machine learning model can learn better patterns.
+
+
 
 
