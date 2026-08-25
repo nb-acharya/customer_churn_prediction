@@ -39,7 +39,6 @@ SELECT
     SUM(CASE WHEN TechSupport IS NULL THEN 1 ELSE 0 END) AS Missing_TechSupport,
     SUM(CASE WHEN StreamingTV IS NULL THEN 1 ELSE 0 END) AS Missing_StreamingTV,
     SUM(CASE WHEN StreamingMovies IS NULL THEN 1 ELSE 0 END) AS Missing_StreamingMovies,
-    SUM(CASE WHEN StreamingMovies IS NULL THEN 1 ELSE 0 END) AS Missing_StreamingMovies,
     SUM(CASE WHEN Contract IS NULL THEN 1 ELSE 0 END) AS Missing_Contract,
     SUM(CASE WHEN PaperlessBilling IS NULL THEN 1 ELSE 0 END) AS Missing_PaperlessBilling,
     SUM(CASE WHEN PaymentMethod IS NULL THEN 1 ELSE 0 END) AS Missing_PaymentMethod,
