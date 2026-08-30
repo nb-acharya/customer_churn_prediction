@@ -6,6 +6,7 @@ select * into dbo.telco_churn_clean
 from dbo.telco_churn_raw
 go
 
+-- To witness Missing values
 SELECT
     COUNT(*) AS TotalRows,
     SUM(CASE WHEN customerID IS NULL THEN 1 ELSE 0 END) AS MissingCustomerID,
@@ -27,7 +28,7 @@ SELECT
 FROM dbo.telco_churn_clean
 WHERE TotalCharges IS NULL;
 
-
+-- Updating TotalCharges to 0
 UPDATE dbo.telco_churn_clean
 SET TotalCharges = 0
 WHERE TotalCharges IS NULL
@@ -44,15 +45,7 @@ WHERE TotalCharges IS NULL;
     For analysis, NULL TotalCharges was converted to 0
 */
 
-
-SELECT
-    customerID,
-    COUNT(*) AS NumberOfRecords
-FROM dbo.telco_churn_clean
-GROUP BY customerID
-HAVING COUNT(*) > 1;
-
-
+-- Checking for any typo appears
 SELECT 'gender' AS ColumnName, gender AS Value, COUNT(*) AS Count
 FROM dbo.telco_churn_clean
 GROUP BY gender
@@ -104,9 +97,7 @@ SELECT 'TechSupport', TechSupport, COUNT(*)
 FROM dbo.telco_churn_clean
 GROUP BY TechSupport;
 
-
-
-
+-- Final validation
 SELECT
     COUNT(*) AS TotalRows,
     COUNT(DISTINCT customerID) AS UniqueCustomers,

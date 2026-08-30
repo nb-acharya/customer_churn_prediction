@@ -1,6 +1,7 @@
 use customerchurn
 go
 
+-- customer churn count and churn percentage
 SELECT
     Churn,
     COUNT(*) AS CustomerCount,
@@ -10,11 +11,8 @@ SELECT
     ) AS ChurnPercentage
 FROM dbo.telco_churn_clean
 GROUP BY Churn;
+-- Findings: About one in four customer churn
 
-
--- churn by contract
-
-select contract, * from telco_churn_clean
 
 -- contract and churn association
 select contract, count(*) as totalcustomers,
@@ -49,24 +47,24 @@ order by ChurnRate desc
 
 
 -- monthly charges and churn
-
 select churn, count(*) as customercount,
 cast(avg(monthlycharges) as decimal(10,2)) as avgmonthlycharges,
 cast(min(monthlycharges) as decimal(10,2)) as minmonthlycharges,
 cast(max(monthlycharges) as decimal(10,2)) as maxmonthlycharges
 from telco_churn_clean
 group by churn
+-- Findings: churned customers have higher monthly charges
 
 -- internet service and churn rate
 select internetservice, count(*) as totalcustomers, sum(case when churn =1 then 1 else 0 end) as churnedcustomers,
 cast(
     sum(case when churn=1 then 1 else 0 end) * 100.0 / count(*) as decimal(5,2)) as churnrate
-
 from telco_churn_clean
 group by internetservice
 order by churnrate desc
+--Findings: Fiber-optic customers have higher churn rate.
 
--- Contract × Internet Service
+-- Contract and Internet Service
 SELECT
     Contract,
     InternetService,
@@ -84,9 +82,13 @@ GROUP BY
 ORDER BY
     Contract,
     ChurnRate DESC;
+-- Findings: ChurnRate for Fiber optic is still higher compared to other two irrespective of Contract.
 
 
--- EDA: customer demographics
+--------------------------------------------------------------------------------------------------------------------------
+----- EDA: customer demographics -----
+----- Are certain customer demographics associated with higher churn?
+--------------------------------------------------------------------------------------------------------------------------
 
 --senior citizen churn
 select seniorcitizen, count(*) as totalcustomers,
@@ -95,9 +97,10 @@ cast(sum(case when churn = 1 then 1 else 0 end) * 100.0 / count(*) as decimal(5,
 from telco_churn_clean
 group by seniorcitizen
 order by churnrate desc
+-- Findings: senior citizens have a much higher churn rate.
 
 
---partner and churn rate
+--- Partner and churn rate
 SELECT
     Partner,
     COUNT(*) AS TotalCustomers,
@@ -110,8 +113,9 @@ SELECT
 FROM dbo.telco_churn_clean
 GROUP BY Partner
 ORDER BY ChurnRate DESC;
+-- Findings: Having no partner has higher churn than having the partner.
 
---dependents and churn rate
+--- Dependents and churn rate
 SELECT
     Dependents,
     COUNT(*) AS TotalCustomers,
@@ -124,9 +128,9 @@ SELECT
 FROM dbo.telco_churn_clean
 GROUP BY Dependents
 ORDER BY ChurnRate DESC;
+-- Findings: not having dependents have higher churn rates
 
-
---payment method and churn rate
+--- Payment method and churn rate
 SELECT
     PaymentMethod,
     COUNT(*) AS TotalCustomers,
@@ -139,8 +143,9 @@ SELECT
 FROM dbo.telco_churn_clean
 GROUP BY PaymentMethod
 ORDER BY ChurnRate DESC;
+-- Findings: customers using electronic check have 3 times the rate of automatic credit card payments.
 
---paperless billing and churn rate
+--- Paperless billing and churn rate
 SELECT
     PaperlessBilling,
     COUNT(*) AS TotalCustomers,
@@ -153,7 +158,13 @@ SELECT
 FROM dbo.telco_churn_clean
 GROUP BY PaperlessBilling
 ORDER BY ChurnRate DESC;
+-- Findings: Paperless billing is associated with higher churn
 
+
+--------------------------------------------------------------------------------------------------------------------------
+----- EDA: Service Usage -----
+----- Are service usage associated with higher churn?
+--------------------------------------------------------------------------------------------------------------------------
 
 SELECT
     OnlineSecurity,
@@ -167,10 +178,11 @@ SELECT
 FROM dbo.telco_churn_clean
 GROUP BY OnlineSecurity
 ORDER BY ChurnRate DESC;
+-- Findings: Customers without online security have nearly 3 times the churn rate of customers who have it.
 
 
 
-
+-- OnlineBackup and churn rate
 SELECT
     OnlineBackup,
     COUNT(*) AS TotalCustomers,
@@ -183,24 +195,26 @@ SELECT
 FROM dbo.telco_churn_clean
 GROUP BY OnlineBackup
 ORDER BY ChurnRate DESC;
+-- Findings: Customers without online backups have higher churn rate
 
 
-
---- device protection
+--- Device protection
 select deviceprotection,count(*) as totalcustomers,
 sum(case when churn = 1 then 1 else 0 end) as ChurnedCustomers,
 cast(sum(case when churn =1 then 1 else 0 end) * 100.0 / count(*)as decimal(5,2)) as churnrate 
 from telco_churn_clean
 group by deviceprotection
 order by churnrate desc
+-- Findings: Customers without device protection have higher churn rate
 
---- tech support
+--- Tech support
 select techsupport, count(*) as totalcustomers, 
 sum(case when churn = 1 then 1 else 0 end) as churnedcustomers,
 cast(sum(case when churn =1 then 1 else 0 end) * 100.0 /count(*) as decimal(5,2)) as churnrate
 from telco_churn_clean
 group by techsupport
 order by churnrate desc
+-- Findings: Customers without tech support have higher churn rate
 
 --- streamingtv
 select streamingtv, count(*) as totalcustomers, 
@@ -209,6 +223,7 @@ cast(sum(case when churn =1 then 1 else 0 end) * 100.0 /count(*) as decimal(5,2)
 from telco_churn_clean
 group by streamingtv
 order by churnrate desc
+-- Findings: StreamingTv have no much impact on churn rate
 
 --- streamingmovies
 select streamingmovies, count(*) as totalcustomers, 
@@ -217,6 +232,7 @@ cast(sum(case when churn =1 then 1 else 0 end) * 100.0 /count(*) as decimal(5,2)
 from telco_churn_clean
 group by streamingmovies
 order by churnrate desc
+-- Findings: Streamingmovies have no much impact on churn rate
 
 --- phoneservice
 select phoneservice, count(*) as totalcustomers, 
@@ -225,6 +241,7 @@ cast(sum(case when churn =1 then 1 else 0 end) * 100.0 /count(*) as decimal(5,2)
 from telco_churn_clean
 group by phoneservice
 order by churnrate desc
+-- Findings: phoneservice have no much impact on churn rate
 
 --- multiplelines
 select multiplelines, count(*) as totalcustomers, 
@@ -233,9 +250,11 @@ cast(sum(case when churn =1 then 1 else 0 end) * 100.0 /count(*) as decimal(5,2)
 from telco_churn_clean
 group by multiplelines
 order by churnrate desc
+-- Findings: multipplelines have no much impact on churn rate
 
+-------- SEGMENTATION --------------
 
-
+--- How churn vary by contract, while also showing each contract's share of the total customer base
 WITH ContractStats AS
 (
     SELECT
@@ -301,9 +320,7 @@ SELECT
 FROM SegmentRates
 ORDER BY ChurnRateRank;
 
-
-
-
+-- create customer risk segments
 SELECT
     CASE
         WHEN tenure <= 12

@@ -1,3 +1,8 @@
+-- DATA PROFILIING: Understand -> Detect problems 
+
+-- Creating database
+CREATE DATABASE CustomerChurn
+
 -- 1. Check table structure
 SELECT
     COLUMN_NAME,
@@ -7,6 +12,7 @@ FROM INFORMATION_SCHEMA.COLUMNS
 WHERE TABLE_NAME = 'telco_churn_raw'
 -- Findings: total number of columns: 21
 
+
 -- 2. Finding total number of rows in the table
 SELECT COUNT(*) AS TotalCustomers
 FROM dbo.telco_churn_raw;
@@ -15,7 +21,7 @@ FROM dbo.telco_churn_raw;
 SELECT TOP 20 *
 FROM dbo.telco_churn_raw;
 
--- Check for duplicate customers
+-- 3. Check for duplicate customers
 select customerID, count(*) as NumberOfRecords from telco_churn_raw
 group by customerID
 having count(*) > 1;
@@ -56,7 +62,7 @@ SELECT
     Churn
 FROM dbo.telco_churn_raw
 WHERE TotalCharges IS NULL;
--- Findings: New customers(tenure = 0) will not have TotalCharges
+-- Findings: New customers (i.e.customers with tenure = 0) will not have TotalCharges as they have just joined.
 
 -- Checking if categorical columns contain unexpected values
 SELECT DISTINCT gender
@@ -76,9 +82,9 @@ FROM dbo.telco_churn_raw;
 
 SELECT DISTINCT OnlineSecurity
 FROM dbo.telco_churn_raw;
--- Findings: No strange values
+-- Findings: No unexpected values found
 
-
+-- checking in numeric columns for suspicious values
 SELECT
     MIN(tenure) AS MinTenure,
     MAX(tenure) AS MaxTenure,
@@ -88,12 +94,6 @@ SELECT
     MAX(TotalCharges) AS MaxTotalCharges
 FROM dbo.telco_churn_raw;
 
-SELECT
-    COUNT(*) AS InvalidRows
-FROM dbo.telco_churn_raw
-WHERE tenure < 0
-   OR MonthlyCharges < 0
-   OR TotalCharges < 0;
 
 -- check for binary columns
    SELECT
@@ -114,3 +114,14 @@ SELECT
     COUNT(*) AS CustomerCount
 FROM dbo.telco_churn_raw
 GROUP BY PhoneService;
+
+
+/*
+-----CONCLUSION------
+7043 customers
+11 missing TotalCharges, due to tenure = 0
+No duplicate customerIDs
+No unexpected categorical values
+No negative numeric values
+Binary fields contain only 0 or 1
+*/

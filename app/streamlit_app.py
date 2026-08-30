@@ -98,6 +98,6 @@ if predict_button:
     st.write(f"Churn Probability: {proba:.2%}")
     
     if proba >= 0.4:
-        st.warning("⚠️ This customer is at risk. Consider retention offers.")
+        st.warning(" This customer is at risk. Consider retention offers.")
     else:
-        st.success("✅ This customer looks stable.")
+        st.success(" This customer looks stable.")
